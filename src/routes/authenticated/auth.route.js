@@ -1,8 +1,8 @@
 "use strict";
 
 const express = require("express");
-const bearer = require("../../middleware/bearer.middleware");
-const acl = require("../../middleware/acl.middleware");
+const bearer = require("../../middleware/bearerAuth.middleware");
+const acl = require("../../middleware/aclAuth.middleware");
 const router = express.Router();
 
 router.use(express.json());

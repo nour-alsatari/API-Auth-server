@@ -2,10 +2,10 @@
 require("dotenv").config();
 const express = require("express");
 const bcrypt = require("bcrypt");
-const { User } = require("../../models/index");
-const basic = require("../../middleware/basic.middleware");
-const bearer = require("../../middleware/bearer.middleware");
-const acl = require("../../middleware/acl.middleware");
+const { User } = require("../../models/index.model");
+const basic = require("../../middleware/basicAuth.middleware");
+const bearer = require("../../middleware/bearerAuth.middleware");
+const acl = require("../../middleware/aclAuth.middleware");
 const router = express.Router();
 
 router.use(express.json());
@@ -20,24 +20,26 @@ router.post("/signin", basic, (req, res) => {
   res.status(200).json(req.user);
 });
 
-router.delete(
-  "/deleteUser/:username",
-  bearer,
-  acl("delete"),
-  async (req, res) => {
-    let userToDelete = req.params.username;
-    let user = await Contact.destroy({ where: { username: userToDelete } });
-    res.status(201).send(`deleted the following user successfully: ${user}`);
-  }
-);
+router.delete("/deleteUser/:username", acl("delete"), async (req, res) => {
+  let userToDelete = req.params.username;
+  let user = await User.destroy({ where: { username: userToDelete } });
+  res
+    .status(201)
+    .send(`deleted the following user successfully: ${req.params.username}`);
+});
 
 router.put("/update/:username", bearer, acl("update"), async (req, res) => {
-  let updateInfo = req.body;
+  // let updateInfo = req.body;
   let userToUpdate = req.params.username;
-  let recordToUpdate = await Contact.findOne({
+  let recordToUpdate = await User.findOne({
     where: { username: userToUpdate },
   });
-  let updatedUser = await recordToUpdate.update(updateInfo);
+  let newData = {
+    username: req.body.username,
+    password: await bcrypt.hash(req.body.password, 5),
+    role: req.body.role,
+  };
+  let updatedUser = await recordToUpdate.update(newData);
   res.status(201).json(updatedUser);
 });
 
