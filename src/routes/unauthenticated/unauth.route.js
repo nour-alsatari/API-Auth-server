@@ -25,10 +25,20 @@ router.delete(
   bearer,
   acl("delete"),
   async (req, res) => {
-    let userToDelete = parseInt(req.params.username);
+    let userToDelete = req.params.username;
     let user = await Contact.destroy({ where: { username: userToDelete } });
     res.status(201).send(`deleted the following user successfully: ${user}`);
   }
 );
+
+router.put("/update/:username", bearer, acl("update"), async (req, res) => {
+  let updateInfo = req.body;
+  let userToUpdate = req.params.username;
+  let recordToUpdate = await Contact.findOne({
+    where: { username: userToUpdate },
+  });
+  let updatedUser = await recordToUpdate.update(updateInfo);
+  res.status(201).json(updatedUser);
+});
 
 module.exports = router;

@@ -8,6 +8,7 @@ const UsersModel = (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -24,8 +25,8 @@ const UsersModel = (sequelize, DataTypes) => {
       type: DataTypes.VIRTUAL,
       get() {
         const acl = {
-          user: ["read"],
-          writer: ["read", "create"],
+          user: ["read", "update"],
+          writer: ["read", "create", "update"],
           admin: ["read", "create", "update", "delete"],
         };
         return acl[this.role];
