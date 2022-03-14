@@ -12,4 +12,6 @@ function bearerAuth(req, res, next) {
   }
 }
 
+
 module.exports = bearerAuth;
+
