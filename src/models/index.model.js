@@ -2,7 +2,6 @@
 
 require("dotenv").config();
 const user = require("./users.model");
-const contact = require("./contacts.model");
 const { Sequelize, DataTypes } = require("sequelize");
 
 const POSTGRES_URI = process.env.DATABASE_URL;
@@ -24,5 +23,4 @@ let sequelize = new Sequelize(POSTGRES_URI, sequelizeOptions);
 module.exports = {
   database: sequelize,
   User: user(sequelize, DataTypes),
-  Contact: contact(sequelize, DataTypes),
 };
